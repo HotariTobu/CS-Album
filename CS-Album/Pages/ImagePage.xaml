@@ -1,0 +1,152 @@
+﻿<Page x:Class="CS_Album.ImagePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CS_Album"
+      xmlns:cc="clr-namespace:WPFCustomControls;assembly=WPFCustomControls"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Loaded="Page_Loaded"
+      Unloaded="Page_Unloaded">
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Page.Resources>
+    <Grid>
+        <Grid.DataContext>
+            <local:ImagePageViewModel/>
+        </Grid.DataContext>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="10"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1" Margin="0,0,5,0">
+            <local:ImageViewer x:Name="ImageViewer" Focusable="True"
+                               PreviewKeyUp="ImageViewer_PreviewKeyUp"
+                               MouseEnter="ImageViewer_MouseEnter"
+                               MouseLeftButtonDown="ImageViewer_MouseLeftButtonDown"
+                               MouseMove="ImageViewer_MouseMove"
+                               Updated="ImageViewer_Updated"
+                               MouseRightButtonUp="ImageViewer_MouseRightButtonUp"/>
+            <Canvas ClipToBounds="True">
+                <Rectangle Stroke="Red" Width="{Binding SelectionWidth}" Height="{Binding SelectionHeight}" StrokeThickness="2" StrokeDashArray="4">
+                    <Rectangle.RenderTransform>
+                        <TranslateTransform X="{Binding SelectionX}" Y="{Binding SelectionY}"/>
+                    </Rectangle.RenderTransform>
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Style.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <BeginStoryboard Name="Story">
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimation Duration="00:00:01" To="8" Storyboard.TargetProperty="StrokeDashOffset"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="Unloaded">
+                                    <StopStoryboard BeginStoryboardName="Story"/>
+                                </EventTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
+            </Canvas>
+        </Grid>
+        <Grid Margin="0,0,5,0" Background="White" Effect="{StaticResource Shadow}">
+            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                <Button Visibility="{Binding AddButtonIsVisible,Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2" Width="25" Height="25" Padding="1"
+                        Click="AddButton_Click">
+                    <Path Style="{StaticResource AddIcon}"/>
+                </Button>
+                <Button Visibility="{Binding RemoveButtonIsVisible,Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2" Width="25" Height="25" Padding="1"
+                        Click="RemoveButton_Click">
+                    <Path Style="{StaticResource RemoveIcon}"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <GridSplitter Grid.RowSpan="2" Width="5" Focusable="False"/>
+        <ComboBox Grid.Column="1" Margin="2" ItemsSource="{Binding ClassList}" SelectedIndex="0" VerticalContentAlignment="Center"
+                  SelectionChanged="ClassComboBox_SelectionChanged"/>
+        <Grid Grid.Column="1" Grid.Row="1" KeyboardNavigation.DirectionalNavigation="None">
+            <Grid Visibility="{Binding GroupIsVisible,Converter={StaticResource BooleanToVisibilityConverter}}"
+                  PreviewMouseWheel="GroupGrid_PreviewMouseWheel"
+                  SizeChanged="GroupGrid_SizeChanged">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <ItemsControl Grid.Row="1" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" ItemsSource="{Binding GroupItemList}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="local:GroupItem">
+                            <Expander Header="{Binding Name}" IsExpanded="True">
+                                <ItemsControl VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                  ItemsSource="{Binding IconItemList}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="local:IconItem">
+                                            <Button Margin="5" Tag="{Binding}" Visibility="{Binding IsVisible,Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                    Width="{Binding DataContext.GroupItemWidth, RelativeSource={RelativeSource FindAncestor, AncestorType=Grid}, Mode=OneWay}"
+                                                    Height="{Binding Width, RelativeSource={RelativeSource Self}, Mode=OneWay}"
+                                                    Click="IconButton_Click">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition/>
+                                                        <RowDefinition Height="auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Image Source="{Binding Icon}"/>
+                                                    <TextBlock Grid.Row="1" HorizontalAlignment="Center" Text="{Binding Name}"/>
+                                                </Grid>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </Expander>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.Template>
+                        <ControlTemplate>
+                            <cc:MyScrollViewer CanContentScale="False" HorizontalScrollBarVisibility="Disabled">
+                                <ItemsPresenter/>
+                            </cc:MyScrollViewer>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+                </ItemsControl>
+                <Border Background="White" Effect="{StaticResource Shadow}" Padding="2">
+                    <Slider Value="{Binding GroupItemWidth}" Maximum="{Binding GroupMaxItemWidth}"/>
+                </Border>
+            </Grid>
+            <local:WrapListView ItemWidth="70" ItemsSource="{Binding IconItemList}" Visibility="{Binding IconIsVisible,Converter={StaticResource BooleanToVisibilityConverter}}">
+                <local:WrapListView.ItemTemplate>
+                    <DataTemplate DataType="local:IconItem">
+                        <Button Margin="5" Tag="{Binding}" Visibility="{Binding IsVisible,Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Width="{Binding ItemWidth, RelativeSource={RelativeSource FindAncestor, AncestorType=local:WrapListView}, Mode=OneWay}"
+                            Height="{Binding Width, RelativeSource={RelativeSource Self}, Mode=OneWay}"
+                            Click="IconButton_Click">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                <Image Source="{Binding Icon}"/>
+                                <TextBlock Grid.Row="1" HorizontalAlignment="Center" Text="{Binding Name}"/>
+                            </Grid>
+                        </Button>
+                    </DataTemplate>
+                </local:WrapListView.ItemTemplate>
+            </local:WrapListView>
+        </Grid>
+    </Grid>
+</Page>

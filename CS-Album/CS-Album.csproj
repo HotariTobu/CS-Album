@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworks>
+      netcoreapp3.1-windows;net5.0-windows;net45-windows;net451-windows;net452-windows;net46-windows;net461-windows;net462-windows;net47-windows;net471-windows;net472-windows;net48
+    </TargetFrameworks>
+    <RootNamespace>CS_Album</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <Authors>Hotari</Authors>
+    <Copyright>Copyright © 2021 hotari13port@gmail.com</Copyright>
+    <AssemblyVersion>1.0</AssemblyVersion>
+    <FileVersion>1.0</FileVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>hotari.pfx</AssemblyOriginatorKeyFile>
+    <Version>1.0</Version>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <Import Project="..\..\SharedWPF\SharedWPF\SharedWPF.projitems" Label="Shared" />
+
+  <ItemGroup>
+    <Compile Remove="backups\**" />
+    <EmbeddedResource Remove="backups\**" />
+    <None Remove="backups\**" />
+    <Page Remove="backups\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\WPFCustomControls\WPFCustomControls\WPFCustomControls.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Readme.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

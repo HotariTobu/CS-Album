@@ -1,0 +1,145 @@
+﻿<Page x:Class="CS_Album.CheckPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CS_Album"
+      xmlns:cc="clr-namespace:WPFCustomControls;assembly=WPFCustomControls"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Loaded="Page_Loaded"
+      Unloaded="Page_Unloaded">
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <local:CountToColorConverter x:Key="CountToColorConverter"/>
+    </Page.Resources>
+    <Grid>
+        <Grid.DataContext>
+            <local:CheckPageViewModel/>
+        </Grid.DataContext>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <cc:MyScrollViewer Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding RosterItemList}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="local:RosterItem">
+                        <Border VerticalAlignment="Top" BorderBrush="Black" BorderThickness="0.5" CornerRadius="20" Margin="10" Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid>
+                                <Border x:Name="Mask" Background="White" CornerRadius="20"/>
+                                <Grid>
+                                    <Grid.OpacityMask>
+                                        <VisualBrush Visual="{Binding ElementName=Mask}"/>
+                                    </Grid.OpacityMask>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="{Binding Name}" TextAlignment="Center" Margin="5"/>
+                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding PersonItemList}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="local:PersonItem">
+                                                <Border BorderBrush="Black" BorderThickness="0,0.5,0,0" Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                    <Border.Background>
+                                                        <SolidColorBrush Color="{Binding Count, Converter={StaticResource CountToColorConverter}}"/>
+                                                    </Border.Background>
+                                                    <Border.ToolTip>
+                                                        <ItemsControl ItemsSource="{Binding Images}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Image Source="{Binding}" Width="200" Height="200" Margin="2"/>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                            <ItemsControl.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <StackPanel Orientation="Horizontal"/>
+                                                                </ItemsPanelTemplate>
+                                                            </ItemsControl.ItemsPanel>
+                                                        </ItemsControl>
+                                                    </Border.ToolTip>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="30"/>
+                                                            <ColumnDefinition Width="140"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="{Binding Number}" Margin="5"/>
+                                                        <TextBlock Text="{Binding Name}" Grid.Column="1" FontSize="18" Margin="5"/>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </cc:MyScrollViewer>
+        <WrapPanel Background="White" Effect="{StaticResource Shadow}">
+            <RadioButton Margin="5" x:Name="ExternalRadioButton" Content="パスの写真" GroupName="Target" VerticalAlignment="Center" ToolTip="※移動された写真は認識されません。" Click="RadioButton_Click"/>
+            <RadioButton Margin="5" x:Name="AlbumRadioButton" Content="アルバムの写真" GroupName="Target" Click="RadioButton_Click"/>
+        </WrapPanel>
+        <Grid Grid.Row="2" Background="White">
+            <Grid.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="10" Direction="90" Color="Black" Opacity="0.2"/>
+            </Grid.Effect>
+            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style TargetType="Rectangle">
+                        <Setter Property="Width" Value="20"/>
+                        <Setter Property="Margin" Value="10"/>
+                    </Style>
+                </StackPanel.Resources>
+                <Rectangle ToolTip="0" Fill="Transparent"/>
+                <Rectangle ToolTip="1" Fill="Pink"/>
+                <Rectangle ToolTip="2" Fill="Red"/>
+                <Rectangle ToolTip="3" Fill="Orange"/>
+                <Rectangle ToolTip="4" Fill="Yellow"/>
+                <Rectangle ToolTip="5" Fill="LightGreen"/>
+                <Rectangle ToolTip="6" Fill="Lime"/>
+                <Rectangle ToolTip="7" Fill="Cyan"/>
+                <Rectangle ToolTip="8" Fill="DeepSkyBlue"/>
+                <Rectangle ToolTip="9" Fill="Blue"/>
+                <Rectangle ToolTip="10" Fill="BlueViolet"/>
+                <Rectangle ToolTip="11~" Fill="Gray"/>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="Width" Value="80"/>
+                        <Setter Property="Margin" Value="10"/>
+                        <Setter Property="CornerRadius" Value="10"/>
+                        <Setter Property="Background" Value="AliceBlue"/>
+                    </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                </StackPanel.Resources>
+                <Border BorderBrush="Black" BorderThickness="0.5" Cursor="Hand"
+                        ToolTip="アルバム内の写真をコピーしたい場所にドラッグ＆ドロップしてください。&#10;画像ファイルがコピーされます。"
+                        MouseMove="AlbumBorder_MouseMove">
+                    <TextBlock Text="アルバムの出力"/>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="0.5" Cursor="Hand"
+                        ToolTip="ここに表示されているチェック結果を出力したい場所にドラッグ＆ドロップしてください。&#10;CSVファイルとして出力されます。"
+                        MouseMove="CSVBorder_MouseMove">
+                    <TextBlock Text="名簿の出力"/>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>

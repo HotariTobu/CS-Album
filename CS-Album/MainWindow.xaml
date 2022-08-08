@@ -1,0 +1,46 @@
+﻿<Window x:Class="CS_Album.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CS_Album"
+        mc:Ignorable="d"
+        Title="CS-Album" Height="450" Width="800" MinHeight="250" MinWidth="800">
+    <Window.DataContext>
+        <local:MainWindowViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        
+    </Window.Resources>
+    <Grid>
+        <TabControl Margin="0,10,0,0">
+            <TabItem Header="パスから写真を表示する" x:Name="PathPage">
+                <Frame Source="Pages/PathPage.xaml"/>
+            </TabItem>
+            <TabItem Header="アルバムから写真を表示する" x:Name="AlbumPage">
+                <Frame Source="Pages/AlbumPage.xaml"/>
+            </TabItem>
+            <TabItem Header="写真に名前を紐付ける" x:Name="ImagePage">
+                <Frame Source="Pages/ImagePage.xaml"/>
+            </TabItem>
+            <TabItem Header="名前をチェックする" x:Name="CheckPage">
+                <Frame Source="Pages/CheckPage.xaml"/>
+            </TabItem>
+            <TabItem Header="ヘルプ" x:Name="HekpPage">
+                <Frame Source="Pages/HelpPage.xaml"/>
+            </TabItem>
+        </TabControl>
+        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Horizontal">
+            <Path Stroke="Black" StrokeThickness="2" Stretch="Uniform">
+                <Path.Data>
+                    <GeometryGroup>
+                        <EllipseGeometry Center="4,4" RadiusX="4" RadiusY="4"/>
+                        <LineGeometry StartPoint="6.82842712474619,6.82842712474619" EndPoint="10,10"/>
+                    </GeometryGroup>
+                </Path.Data>
+            </Path>
+            <TextBox Margin="2" Padding="2" Width="200" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"
+                         TextChanged="SearchTextBox_TextChanged"/>
+        </StackPanel>
+    </Grid>
+</Window>
